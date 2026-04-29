@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.chrome-check*/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+backup-before-rollback-*/
+
+# Legacy/generated files from prior experiments; the current site is static.
+package.json
+package-lock.json
+postcss.config.js
+tailwind.config.ts
+tsconfig*.json
+vite.config.ts
+src/
+public/

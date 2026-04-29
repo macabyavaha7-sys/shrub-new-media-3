@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>灌木新媒体实验室</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: #000;
+        color: #fff;
+        font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Heiti SC", Arial, sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .liquid-glass {
+        background: rgba(255, 255, 255, 0.01);
+        background-blend-mode: luminosity;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border: none;
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .liquid-glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.4px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0.15) 20%,
+          rgba(255, 255, 255, 0) 40%,
+          rgba(255, 255, 255, 0) 60%,
+          rgba(255, 255, 255, 0.15) 80%,
+          rgba(255, 255, 255, 0.45) 100%
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      .nav {
+        position: fixed;
+        top: 18px;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5vw;
+      }
+
+      .logo {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        font: italic 30px Georgia, serif;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 6px;
+      }
+
+      .nav-links a {
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .nav-cta {
+        background: #fff;
+        color: #000;
+      }
+
+      section {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .bg-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hero-video {
+        left: 50%;
+        width: 120%;
+        height: 120%;
+        transform: translateX(-50%);
+        object-position: top center;
+      }
+
+      .layer {
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 120px 24px 48px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        border-radius: 999px;
+        padding: 6px 16px 6px 6px;
+        font-size: 14px;
+      }
+
+      .badge strong {
+        display: inline-block;
+        border-radius: 999px;
+        background: #fff;
+        color: #000;
+        padding: 6px 13px;
+        font-size: 12px;
+      }
+
+      h1 {
+        margin: 24px auto 0;
+        max-width: 980px;
+        font-size: clamp(52px, 8vw, 96px);
+        line-height: 1.04;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 760px;
+        margin: 22px auto 0;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .button-row {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .glass-button {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 12px 22px;
+        font-weight: 900;
+      }
+
+      .experiment {
+        padding: 120px 8vw 52px;
+      }
+
+      .kicker {
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 14px;
+        font-weight: 900;
+      }
+
+      .slogan {
+        margin: 28px 0 0;
+        max-width: 900px;
+        font-size: clamp(50px, 7vw, 96px);
+        line-height: 1.05;
+        font-weight: 900;
+      }
+
+      .main-cards {
+        margin-top: 58px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 28px;
+      }
+
+      .main-card {
+        min-height: 360px;
+        border-radius: 1.25rem;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-tags {
+        margin-left: auto;
+        display: flex;
+        max-width: 72%;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .card-tags span {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .main-card h3 {
+        margin: auto 0 14px;
+        font-size: clamp(34px, 4vw, 48px);
+        line-height: 1;
+      }
+
+      .main-card p {
+        margin: 0;
+        max-width: 30ch;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      .works {
+        min-height: 100vh;
+        background: #000;
+        padding: 86px 6vw 64px;
+      }
+
+      .works-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 28px;
+        margin-bottom: 40px;
+      }
+
+      .works-title {
+        font-size: clamp(34px, 4vw, 52px);
+        line-height: 1.08;
+        font-weight: 500;
+      }
+
+      .works-title span {
+        display: block;
+        margin-top: 8px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .feature-grid {
+        display: flex;
+        align-items: stretch;
+        gap: 20px;
+        min-height: min(72vh, 640px);
+      }
+
+      .feature-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        min-height: 560px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.035);
+        background-blend-mode: luminosity;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.18);
+        flex: 1 1 0;
+        min-width: 0;
+        cursor: default;
+        transition: flex-basis 320ms ease, flex-grow 320ms ease, opacity 240ms ease, filter 240ms ease, transform 240ms ease;
+      }
+
+      .feature-card.tall {
+        min-height: 560px;
+      }
+
+      .feature-card.wide {
+        grid-column: auto;
+      }
+
+      .feature-card img,
+      .feature-card video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .feature-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .feature-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 14px;
+      }
+
+      .feature-card h2 {
+        margin: auto 0 0;
+        position: relative;
+        z-index: 1;
+        font-size: clamp(26px, 3vw, 34px);
+        line-height: 1.15;
+        font-weight: 500;
+      }
+
+      .feature-card p {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .work-card {
+        isolation: isolate;
+      }
+
+      .feature-grid.is-expanded .work-card {
+        flex: 0.55 1 0;
+        opacity: 0.72;
+        filter: saturate(0.82) brightness(0.78);
+      }
+
+      .feature-grid:has(.work-card:hover) .work-card {
+        flex: 0.55 1 0;
+        opacity: 0.72;
+        filter: saturate(0.82) brightness(0.78);
+      }
+
+      .feature-grid.is-expanded .work-card.is-active {
+        flex: 0 0 min(40vw, 380px);
+        opacity: 1;
+        filter: none;
+        transform: translateY(-6px);
+      }
+
+      .feature-grid:has(.work-card:hover) .work-card:hover {
+        flex: 0 0 min(40vw, 380px);
+        opacity: 1;
+        filter: none;
+        transform: translateY(-6px);
+      }
+
+      .cover-layer,
+      .hover-layer,
+      .detail-panel {
+        transition: opacity 240ms ease, transform 240ms ease;
+      }
+
+      .cover-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+      }
+
+      .cover-layer img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.58;
+        filter: blur(12px) saturate(1.1) brightness(0.92);
+        transform: scale(1.08);
+      }
+
+      .cover-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 72% 16%, rgba(255, 255, 255, 0.22), transparent 18%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.62));
+      }
+
+      .static-title {
+        position: absolute;
+        left: 28px;
+        right: 28px;
+        bottom: 26px;
+        z-index: 2;
+      }
+
+      .static-title strong {
+        display: block;
+        font-size: clamp(28px, 3vw, 42px);
+        line-height: 1;
+      }
+
+      .static-title span {
+        display: block;
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .hover-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.035);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+
+      .hover-layer video,
+      .hover-layer img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.48;
+        filter: blur(10px) saturate(1.08) brightness(0.88);
+        transform: scale(1.08);
+      }
+
+      .video-missing {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 28px;
+        color: rgba(255, 255, 255, 0.72);
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.7;
+        background: rgba(0, 0, 0, 0.26);
+      }
+
+      .detail-panel {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        z-index: 4;
+        opacity: 0;
+        transform: translateY(16px);
+        border-radius: 18px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      }
+
+      .detail-panel h3 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.15;
+      }
+
+      .detail-title {
+        margin: 8px 0 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .metric-grid div {
+        border-radius: 12px;
+        padding: 9px 8px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .metric-grid span {
+        display: block;
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 10px;
+      }
+
+      .metric-grid strong {
+        display: block;
+        margin-top: 4px;
+        font-size: 13px;
+      }
+
+      .work-card:hover .cover-layer {
+        opacity: 0;
+        transform: scale(1.02);
+      }
+
+      .work-card:hover .hover-layer,
+      .work-card:hover .detail-panel,
+      .work-card.is-active .hover-layer,
+      .work-card.is-active .detail-panel {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .work-card.is-active .cover-layer {
+        opacity: 0;
+        transform: scale(1.02);
+      }
+
+      .feature-grid.is-expanded .work-card:not(.is-active) .static-title span {
+        display: none;
+      }
+
+      .feature-grid:has(.work-card:hover) .work-card:not(:hover) .static-title span {
+        display: none;
+      }
+
+      .feature-grid.is-expanded .work-card:not(.is-active) .static-title strong {
+        font-size: clamp(22px, 2vw, 30px);
+      }
+
+      .feature-grid:has(.work-card:hover) .work-card:not(:hover) .static-title strong {
+        font-size: clamp(22px, 2vw, 30px);
+      }
+
+      @media (max-width: 860px) {
+        .nav-links {
+          display: none;
+        }
+
+        .main-cards,
+        .feature-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .feature-card,
+        .feature-grid.is-expanded .work-card,
+        .feature-grid.is-expanded .work-card.is-active {
+          flex: none;
+          min-height: 420px;
+          transform: none;
+        }
+
+        .feature-card.tall,
+        .feature-card.wide {
+          grid-column: auto;
+          grid-row: auto;
+        }
+
+        .works-header {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <a class="logo liquid-glass" href="#">a</a>
+      <div class="nav-links liquid-glass">
+        <a href="#experiment-sequence">实验序列</a>
+        <a href="#">手艺人</a>
+        <a href="#">哲学</a>
+        <a href="#works-showcase">拓新</a>
+        <a class="nav-cta" href="#experiment-sequence">进入实验 ↗</a>
+      </div>
+      <div style="width: 48px"></div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <video
+          class="bg-video hero-video"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+        ></video>
+        <div class="layer">
+          <div class="badge liquid-glass"><strong>New</strong><span>Maiden Crewed Voyage to Mars Arrives 2026</span></div>
+          <h1>灌木新媒体实验室</h1>
+          <p class="hero-copy">Discover the universe in ways once unimaginable. Our pioneering vessels and breakthrough engineering bring deep-space exploration within reach - secure and extraordinary.</p>
+          <div class="button-row">
+            <a class="glass-button liquid-glass" href="#experiment-sequence">Start Your Voyage ↗</a>
+            <a class="glass-button" href="#">View Liftoff ▶</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="experiment-sequence" class="experiment">
+        <video
+          class="bg-video"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+        ></video>
+        <div class="layer">
+          <div class="kicker">// 实验序列</div>
+          <h2 class="slogan">文化视听实验室</h2>
+          <div class="main-cards">
+            <article class="main-card liquid-glass">
+              <div class="card-tags">
+                <span class="liquid-glass">服饰形制</span>
+                <span class="liquid-glass">礼仪镜头</span>
+                <span class="liquid-glass">东方美学</span>
+                <span class="liquid-glass">影像叙事</span>
+              </div>
+              <h3>汉服</h3>
+              <p>以汉服为视觉核心，记录传统服饰在当代语境中的流动、秩序与身体表达。</p>
+            </article>
+            <article class="main-card liquid-glass">
+              <div class="card-tags">
+                <span class="liquid-glass">黑白对弈</span>
+                <span class="liquid-glass">棋局结构</span>
+                <span class="liquid-glass">东方思辨</span>
+                <span class="liquid-glass">节奏控制</span>
+              </div>
+              <h3>围棋</h3>
+              <p>从棋盘、落子与留白出发，呈现围棋背后的空间判断、时间意识与精神张力。</p>
+            </article>
+            <article class="main-card liquid-glass">
+              <div class="card-tags">
+                <span class="liquid-glass">茶山现场</span>
+                <span class="liquid-glass">制茶工序</span>
+                <span class="liquid-glass">器物温度</span>
+                <span class="liquid-glass">风土气息</span>
+              </div>
+              <h3>茶叶</h3>
+              <p>围绕茶叶的生长、采制与冲泡，构建一条兼具质感、气味与地域记忆的视听线索。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="works-showcase" class="works">
+        <div class="works-header">
+          <div class="works-title">更多作品展示<span>8 个作品循环呈现。</span></div>
+          <a class="glass-button liquid-glass" href="#experiment-sequence">进入实验序列</a>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card work-card" data-slot="0"></article>
+          <article class="feature-card work-card" data-slot="1"></article>
+          <article class="feature-card work-card" data-slot="2"></article>
+          <article class="feature-card work-card" data-slot="3"></article>
+        </div>
+      </section>
+    </main>
+    <script>
+      const worksData = [
+        {
+          category: "京剧",
+          title: "走进京剧，30 秒区分，生旦净（末）丑",
+          likes: "187.6万",
+          favorites: "19.7万",
+          shares: "17.2万",
+          comments: "1.7万",
+          cover: "assets/covers/京剧-7357280560726740259.webp",
+          playUrl: "https://www.douyin.com/video/7357280560726740259",
+        },
+        {
+          category: "汉服",
+          title: "何为衣冠楚楚，30 秒了解汉服文化",
+          likes: "803.8万",
+          favorites: "78.8万",
+          shares: "141.7万",
+          comments: "15.5万",
+          cover: "assets/covers/汉服-7366985797238590755.webp",
+          playUrl: "https://www.douyin.com/video/7366985797238590755",
+        },
+        {
+          category: "围棋",
+          title: "神之一手：40 秒学会围棋",
+          likes: "266.8万",
+          favorites: "39.1万",
+          shares: "33.6万",
+          comments: "6.4万",
+          cover: "assets/covers/围棋-7353271780628319522.webp",
+          playUrl: "https://www.douyin.com/video/7353271780628319522",
+        },
+        {
+          category: "茶叶",
+          title: "30 秒带你了解冷泡茶",
+          likes: "359.6万",
+          favorites: "127.6万",
+          shares: "102.9万",
+          comments: "5.1万",
+          cover: "assets/covers/茶叶-7502780270949879098.webp",
+          playUrl: "https://www.douyin.com/video/7502780270949879098",
+        },
+        {
+          category: "咖啡",
+          title: "咖啡不再傻傻分不清",
+          likes: "215.4万",
+          favorites: "45.1万",
+          shares: "95.9万",
+          comments: "4.3万",
+          cover: "assets/covers/咖啡-7510430154377334075.webp",
+          playUrl: "https://www.douyin.com/video/7510430154377334075",
+        },
+        {
+          category: "象棋",
+          title: "象棋到底怎么下",
+          likes: "49.1万",
+          favorites: "14.3万",
+          shares: "10.6万",
+          comments: "1.8万",
+          cover: "assets/covers/象棋-7422221089616465215.webp",
+          playUrl: "https://www.douyin.com/video/7422221089616465215",
+        },
+        {
+          category: "舞狮",
+          title: "民族觉醒之意，故名“醒狮”",
+          likes: "31.1万",
+          favorites: "2.0万",
+          shares: "2.5万",
+          comments: "4036",
+          cover: "assets/covers/舞狮-7450686002923867450.webp",
+          playUrl: "https://www.douyin.com/video/7450686002923867450",
+        },
+        {
+          category: "唢呐",
+          title: "30 秒学会唢呐，没点才艺能上桌吗？",
+          likes: "59.2万",
+          favorites: "8.4万",
+          shares: "9.1万",
+          comments: "1.2万",
+          cover: "assets/covers/唢呐-7430095028300664124.webp",
+          playUrl: "https://www.douyin.com/video/7430095028300664124",
+        },
+      ];
+
+      const slots = Array.from(document.querySelectorAll(".work-card"));
+      const featureGrid = document.querySelector(".feature-grid");
+      let workOffset = 0;
+      let isWorkHovering = false;
+
+      function metric(label, value) {
+        return `<div><span>${label}</span><strong>${value}</strong></div>`;
+      }
+
+      function renderWorks() {
+        slots.forEach((slot, slotIndex) => {
+          const work = worksData[(workOffset + slotIndex) % worksData.length];
+          const number = String(slotIndex + 1).padStart(2, "0");
+          const videoLayer = work.mp4
+            ? `<video src="${work.mp4}" muted loop playsinline></video>`
+            : `<img src="${work.cover}" alt="" />
+              <div class="video-missing">
+                资料包当前提供的是抖音播放链接，未包含可站内播放的 MP4。<br />
+                后续补充 mp4_url 后，这里会在悬浮时静音播放视频。
+              </div>`;
+
+          slot.innerHTML = `
+            <div class="cover-layer">
+              <img src="${work.cover}" alt="${work.category}封面" />
+              <div class="feature-top feature-content" style="position:absolute;left:28px;right:28px;top:24px;z-index:2">
+                <span>${number}/</span>
+                <span>${work.category}</span>
+              </div>
+              <div class="static-title">
+                <strong>${work.category}</strong>
+                <span>${work.title}</span>
+              </div>
+            </div>
+            <div class="hover-layer">
+              ${videoLayer}
+            </div>
+            <div class="detail-panel">
+              <h3>${work.category}</h3>
+              <p class="detail-title">${work.title}</p>
+              <div class="metric-grid">
+                ${metric("点赞", work.likes)}
+                ${metric("收藏", work.favorites)}
+                ${metric("转发", work.shares)}
+                ${metric("评论", work.comments)}
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      slots.forEach((slot) => {
+        slot.addEventListener("mouseenter", () => {
+          isWorkHovering = true;
+          featureGrid?.classList.add("is-expanded");
+          slots.forEach((item) => item.classList.toggle("is-active", item === slot));
+          slot.querySelector("video")?.play?.().catch(() => {});
+        });
+        slot.addEventListener("mouseleave", () => {
+          isWorkHovering = false;
+          featureGrid?.classList.remove("is-expanded");
+          slots.forEach((item) => item.classList.remove("is-active"));
+          slot.querySelector("video")?.pause?.();
+        });
+      });
+
+      renderWorks();
+      setInterval(() => {
+        if (isWorkHovering) return;
+        workOffset = (workOffset + 1) % worksData.length;
+        renderWorks();
+      }, 5000);
+    </script>
+  </body>
+</html>
