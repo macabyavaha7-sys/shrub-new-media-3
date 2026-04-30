@@ -67,6 +67,28 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 5vw;
+        transform: translateY(0);
+        transition:
+          top 260ms ease,
+          padding 260ms ease,
+          transform 260ms ease,
+          background 260ms ease,
+          box-shadow 260ms ease,
+          backdrop-filter 260ms ease;
+        will-change: transform, top, padding;
+      }
+
+      .nav.nav-compact {
+        top: 0;
+        padding: 8px 5vw;
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+
+      .nav.nav-hidden {
+        transform: translateY(-110%);
       }
 
       .logo {
@@ -76,6 +98,13 @@
         place-items: center;
         border-radius: 999px;
         font: italic 30px Georgia, serif;
+        transition: width 260ms ease, height 260ms ease, font-size 260ms ease;
+      }
+
+      .nav.nav-compact .logo {
+        width: 38px;
+        height: 38px;
+        font-size: 24px;
       }
 
       .nav-links {
@@ -84,6 +113,13 @@
         gap: 6px;
         border-radius: 999px;
         padding: 6px;
+        transition: padding 260ms ease, background 260ms ease, box-shadow 260ms ease;
+      }
+
+      .nav.nav-compact .nav-links {
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
       }
 
       .nav-links a {
@@ -92,6 +128,21 @@
         font-size: 14px;
         font-weight: 900;
         white-space: nowrap;
+        transition: padding 260ms ease, font-size 260ms ease;
+      }
+
+      .nav.nav-compact .nav-links a {
+        padding: 9px 16px;
+        font-size: 13px;
+      }
+
+      .nav-spacer {
+        width: 48px;
+        transition: width 260ms ease;
+      }
+
+      .nav.nav-compact .nav-spacer {
+        width: 38px;
       }
 
       .nav-cta {
@@ -130,7 +181,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 120px 24px 48px;
+        padding: 150px 24px 48px;
         text-align: center;
       }
 
@@ -187,6 +238,7 @@
 
       .experiment {
         padding: 120px 8vw 52px;
+        overflow: visible;
       }
 
       .kicker {
@@ -211,11 +263,279 @@
       }
 
       .main-card {
+        position: relative;
         min-height: 360px;
         border-radius: 1.25rem;
+        padding: 0;
+        display: block;
+        overflow: visible;
+        isolation: isolate;
+        transition: transform 320ms ease;
+      }
+
+      .main-card:hover,
+      .main-card.is-preview {
+        z-index: 5;
+        transform: translateY(-18px);
+      }
+
+      .exp-frame {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        border-radius: inherit;
+        background: rgba(255, 255, 255, 0.04);
+        transition:
+          top 320ms ease,
+          left 320ms ease,
+          right 320ms ease,
+          bottom 320ms ease,
+          width 320ms ease,
+          height 320ms ease,
+          transform 320ms ease,
+          border-radius 320ms ease,
+          box-shadow 320ms ease;
+      }
+
+      .main-card:hover .exp-frame,
+      .main-card.is-preview .exp-frame {
+        top: -168px;
+        left: 50%;
+        right: auto;
+        bottom: auto;
+        width: min(330px, calc(100vw - 48px));
+        height: min(586px, 82vh);
+        transform: translateX(-50%);
+        border-radius: 24px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42);
+      }
+
+      .exp-cover,
+      .exp-video,
+      .exp-video-fallback {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .exp-cover {
+        filter: saturate(1.05) brightness(0.82);
+        transition: opacity 220ms ease, transform 320ms ease;
+      }
+
+      .main-card:hover .exp-cover,
+      .main-card.is-preview .exp-cover {
+        opacity: 0;
+        transform: scale(1.04);
+      }
+
+      .main-card.no-video:hover .exp-cover,
+      .main-card.no-video.is-preview .exp-cover {
+        opacity: 0.38;
+      }
+
+      .exp-video,
+      .exp-video-fallback {
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .exp-video-fallback {
+        display: grid;
+        place-items: center;
         padding: 28px;
-        display: flex;
-        flex-direction: column;
+        color: rgba(255, 255, 255, 0.74);
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.7;
+        background: rgba(0, 0, 0, 0.26);
+      }
+
+      .main-card:hover .exp-video,
+      .main-card:hover .exp-video-fallback,
+      .main-card.is-preview .exp-video,
+      .main-card.is-preview .exp-video-fallback {
+        opacity: 1;
+      }
+
+      .exp-frame::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.58));
+        pointer-events: none;
+      }
+
+      .exp-static {
+        position: absolute;
+        left: 28px;
+        right: 28px;
+        bottom: 26px;
+        z-index: 2;
+        transition: opacity 180ms ease, transform 220ms ease;
+      }
+
+      .main-card:hover .exp-static,
+      .main-card.is-preview .exp-static {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      .exp-static h3 {
+        margin: 0;
+        font-size: clamp(34px, 4vw, 48px);
+        line-height: 1;
+      }
+
+      .exp-static p {
+        margin: 14px 0 0;
+        max-width: 30ch;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      .exp-stat-stack {
+        position: absolute;
+        top: 26px;
+        right: 24px;
+        z-index: 2;
+        display: grid;
+        gap: 8px;
+        transition: opacity 180ms ease, transform 220ms ease;
+      }
+
+      .main-card:hover .exp-stat-stack,
+      .main-card.is-preview .exp-stat-stack {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      .exp-stat {
+        min-width: 96px;
+        border-radius: 999px;
+        padding: 7px 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 12px;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .exp-sound {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 5;
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        background: rgba(0, 0, 0, 0.28);
+        color: #fff;
+        font-size: 15px;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: opacity 220ms ease, transform 220ms ease, background 180ms ease;
+      }
+
+      .main-card:hover .exp-sound,
+      .main-card.is-preview .exp-sound {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .exp-sound:hover {
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .exp-detail {
+        position: absolute;
+        top: calc(100% + 14px);
+        left: 0;
+        right: 0;
+        z-index: 4;
+        border-radius: 20px;
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 220ms ease, transform 220ms ease;
+      }
+
+      .main-card:hover .exp-detail,
+      .main-card.is-preview .exp-detail {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .exp-detail h4 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.25;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .exp-detail p {
+        margin: 8px 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 13px;
+        line-height: 1.55;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .exp-link {
+        display: inline-block;
+        max-width: 100%;
+        vertical-align: bottom;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .exp-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .exp-detail-grid div {
+        min-width: 0;
+        border-radius: 12px;
+        padding: 9px 8px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .exp-detail-grid span {
+        display: block;
+        color: rgba(255, 255, 255, 0.52);
+        font-size: 10px;
+      }
+
+      .exp-detail-grid strong {
+        display: block;
+        margin-top: 4px;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .card-tags {
@@ -248,6 +568,19 @@
         line-height: 1.65;
       }
 
+      .main-card .exp-static p {
+        margin: 14px 0 0;
+      }
+
+      .main-card .exp-detail p {
+        margin: 8px 0 0;
+        max-width: none;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 13px;
+        line-height: 1.55;
+        overflow: hidden;
+      }
+
       .works {
         min-height: 100vh;
         background: #000;
@@ -256,22 +589,16 @@
 
       .works-header {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-between;
         gap: 28px;
         margin-bottom: 40px;
       }
 
       .works-title {
-        font-size: clamp(34px, 4vw, 52px);
-        line-height: 1.08;
-        font-weight: 500;
-      }
-
-      .works-title span {
-        display: block;
-        margin-top: 8px;
-        color: rgba(255, 255, 255, 0.4);
+        font-size: 16px;
+        line-height: 1;
+        font-weight: 900;
       }
 
       .feature-grid {
@@ -291,8 +618,8 @@
         flex-direction: column;
         background: rgba(255, 255, 255, 0.035);
         background-blend-mode: luminosity;
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
         border: 1px solid rgba(255, 255, 255, 0.28);
         box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.18);
         flex: 1 1 0;
@@ -392,9 +719,9 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        opacity: 0.58;
-        filter: blur(12px) saturate(1.1) brightness(0.92);
-        transform: scale(1.08);
+        opacity: 1;
+        filter: saturate(1.06) brightness(0.9);
+        transform: none;
       }
 
       .cover-layer::after {
@@ -402,8 +729,8 @@
         position: absolute;
         inset: 0;
         background:
-          radial-gradient(circle at 72% 16%, rgba(255, 255, 255, 0.22), transparent 18%),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.62));
+          radial-gradient(circle at 72% 16%, rgba(255, 255, 255, 0.12), transparent 18%),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.48));
       }
 
       .static-title {
@@ -433,9 +760,9 @@
         inset: 0;
         z-index: 3;
         opacity: 0;
-        background: rgba(255, 255, 255, 0.035);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
       }
 
       .hover-layer video,
@@ -443,9 +770,9 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        opacity: 0.48;
-        filter: blur(10px) saturate(1.08) brightness(0.88);
-        transform: scale(1.08);
+        opacity: 0.86;
+        filter: saturate(1.08) brightness(0.78);
+        transform: none;
       }
 
       .video-missing {
@@ -458,7 +785,7 @@
         text-align: center;
         font-size: 13px;
         line-height: 1.7;
-        background: rgba(0, 0, 0, 0.26);
+        background: rgba(0, 0, 0, 0.18);
       }
 
       .detail-panel {
@@ -550,6 +877,193 @@
         font-size: clamp(22px, 2vw, 30px);
       }
 
+      .continuation-section {
+        position: relative;
+        min-height: 100vh;
+        padding: 120px 8vw;
+        background: #000;
+        overflow: hidden;
+      }
+
+      .continuation-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.12), transparent 24%),
+          radial-gradient(circle at 78% 12%, rgba(212, 176, 105, 0.18), transparent 26%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 34%, rgba(255, 255, 255, 0.03));
+      }
+
+      .continuation-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .section-pill {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 7px 14px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .section-heading {
+        max-width: 760px;
+        margin: 24px 0 0;
+        font-size: clamp(48px, 7vw, 92px);
+        line-height: 0.95;
+        font-weight: 900;
+      }
+
+      .section-copy {
+        max-width: 620px;
+        margin: 22px 0 0;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 16px;
+        line-height: 1.8;
+      }
+
+      .split-feature {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 44px;
+        align-items: center;
+        margin-top: 64px;
+      }
+
+      .split-feature.reverse {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      }
+
+      .split-copy h3 {
+        margin: 0;
+        font-size: clamp(34px, 4vw, 56px);
+        line-height: 1;
+      }
+
+      .split-copy p {
+        max-width: 48ch;
+        margin: 18px 0 0;
+        color: rgba(255, 255, 255, 0.66);
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .media-shell {
+        min-height: 360px;
+        border-radius: 28px;
+        padding: 28px;
+        display: flex;
+        align-items: flex-end;
+        background:
+          radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.24), transparent 18%),
+          linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.015));
+      }
+
+      .media-shell strong {
+        display: block;
+        font-size: clamp(28px, 3vw, 44px);
+        line-height: 1;
+      }
+
+      .media-shell span {
+        display: block;
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .glass-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 58px;
+      }
+
+      .glass-card {
+        min-height: 220px;
+        border-radius: 24px;
+        padding: 24px;
+      }
+
+      .glass-card h3 {
+        margin: 28px 0 0;
+        font-size: 24px;
+        line-height: 1.1;
+      }
+
+      .glass-card p {
+        margin: 14px 0 0;
+        color: rgba(255, 255, 255, 0.64);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .icon-dot {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        color: #000;
+        background: #fff;
+        font-weight: 900;
+      }
+
+      .stats-panel {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 24px;
+        margin-top: 58px;
+        border-radius: 32px;
+        padding: 42px;
+      }
+
+      .stat-value {
+        display: block;
+        font-size: clamp(40px, 5vw, 72px);
+        line-height: 0.9;
+        font-weight: 900;
+      }
+
+      .stat-label {
+        display: block;
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 13px;
+      }
+
+      .quote-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 58px;
+      }
+
+      .quote-card {
+        border-radius: 24px;
+        padding: 28px;
+      }
+
+      .quote-card p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .quote-card strong {
+        display: block;
+        margin-top: 26px;
+        font-size: 14px;
+      }
+
       @media (max-width: 860px) {
         .nav-links {
           display: none;
@@ -578,6 +1092,18 @@
         .works-header {
           flex-direction: column;
         }
+
+        .split-feature,
+        .split-feature.reverse,
+        .glass-grid,
+        .stats-panel,
+        .quote-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .continuation-section {
+          padding: 96px 6vw;
+        }
       }
     </style>
   </head>
@@ -586,12 +1112,12 @@
       <a class="logo liquid-glass" href="#">a</a>
       <div class="nav-links liquid-glass">
         <a href="#experiment-sequence">实验序列</a>
-        <a href="#">手艺人</a>
-        <a href="#">哲学</a>
-        <a href="#works-showcase">拓新</a>
+        <a href="#craftspeople">手艺人</a>
+        <a href="#philosophy">哲学</a>
+        <a href="#innovation">拓新</a>
         <a class="nav-cta" href="#experiment-sequence">进入实验 ↗</a>
       </div>
-      <div style="width: 48px"></div>
+      <div class="nav-spacer"></div>
     </nav>
 
     <main>
@@ -628,35 +1154,92 @@
           <div class="kicker">// 实验序列</div>
           <h2 class="slogan">文化视听实验室</h2>
           <div class="main-cards">
-            <article class="main-card liquid-glass">
-              <div class="card-tags">
-                <span class="liquid-glass">服饰形制</span>
-                <span class="liquid-glass">礼仪镜头</span>
-                <span class="liquid-glass">东方美学</span>
-                <span class="liquid-glass">影像叙事</span>
+            <article class="main-card liquid-glass no-video" data-work-card>
+              <div class="exp-frame">
+                <img class="exp-cover" src="assets/covers/汉服-7366985797238590755.webp" alt="汉服封面" />
+                <div class="exp-video-fallback">
+                  资料包当前未包含可站内播放的 MP4。<br />
+                  补充视频地址后将自动静音播放。
+                </div>
+                <button class="exp-sound" type="button" aria-label="切换声音">🔇</button>
+                <div class="exp-stat-stack">
+                  <div class="exp-stat">点赞 803.8万</div>
+                  <div class="exp-stat">收藏 78.8万</div>
+                  <div class="exp-stat">评论 15.5万</div>
+                </div>
+                <div class="exp-static">
+                  <h3>汉服</h3>
+                  <p>以汉服为视觉核心，记录传统服饰在当代语境中的流动、秩序与身体表达。</p>
+                </div>
               </div>
-              <h3>汉服</h3>
-              <p>以汉服为视觉核心，记录传统服饰在当代语境中的流动、秩序与身体表达。</p>
+              <div class="exp-detail">
+                <h4>何为衣冠楚楚，30 秒了解汉服文化</h4>
+                <p>播放页：<span class="exp-link">https://www.douyin.com/video/7366985797238590755</span></p>
+                <div class="exp-detail-grid">
+                  <div><span>点赞</span><strong>803.8万</strong></div>
+                  <div><span>收藏</span><strong>78.8万</strong></div>
+                  <div><span>转发</span><strong>141.7万</strong></div>
+                  <div><span>评论</span><strong>15.5万</strong></div>
+                </div>
+              </div>
             </article>
-            <article class="main-card liquid-glass">
-              <div class="card-tags">
-                <span class="liquid-glass">黑白对弈</span>
-                <span class="liquid-glass">棋局结构</span>
-                <span class="liquid-glass">东方思辨</span>
-                <span class="liquid-glass">节奏控制</span>
+            <article class="main-card liquid-glass no-video" data-work-card>
+              <div class="exp-frame">
+                <img class="exp-cover" src="assets/covers/围棋-7353271780628319522.webp" alt="围棋封面" />
+                <div class="exp-video-fallback">
+                  资料包当前未包含可站内播放的 MP4。<br />
+                  补充视频地址后将自动静音播放。
+                </div>
+                <button class="exp-sound" type="button" aria-label="切换声音">🔇</button>
+                <div class="exp-stat-stack">
+                  <div class="exp-stat">点赞 266.8万</div>
+                  <div class="exp-stat">收藏 39.1万</div>
+                  <div class="exp-stat">评论 6.4万</div>
+                </div>
+                <div class="exp-static">
+                  <h3>围棋</h3>
+                  <p>从棋盘、落子与留白出发，呈现围棋背后的空间判断、时间意识与精神张力。</p>
+                </div>
               </div>
-              <h3>围棋</h3>
-              <p>从棋盘、落子与留白出发，呈现围棋背后的空间判断、时间意识与精神张力。</p>
+              <div class="exp-detail">
+                <h4>神之一手：40 秒学会围棋</h4>
+                <p>播放页：<span class="exp-link">https://www.douyin.com/video/7353271780628319522</span></p>
+                <div class="exp-detail-grid">
+                  <div><span>点赞</span><strong>266.8万</strong></div>
+                  <div><span>收藏</span><strong>39.1万</strong></div>
+                  <div><span>转发</span><strong>33.6万</strong></div>
+                  <div><span>评论</span><strong>6.4万</strong></div>
+                </div>
+              </div>
             </article>
-            <article class="main-card liquid-glass">
-              <div class="card-tags">
-                <span class="liquid-glass">茶山现场</span>
-                <span class="liquid-glass">制茶工序</span>
-                <span class="liquid-glass">器物温度</span>
-                <span class="liquid-glass">风土气息</span>
+            <article class="main-card liquid-glass no-video" data-work-card>
+              <div class="exp-frame">
+                <img class="exp-cover" src="assets/covers/茶叶-7502780270949879098.webp" alt="茶叶封面" />
+                <div class="exp-video-fallback">
+                  资料包当前未包含可站内播放的 MP4。<br />
+                  补充视频地址后将自动静音播放。
+                </div>
+                <button class="exp-sound" type="button" aria-label="切换声音">🔇</button>
+                <div class="exp-stat-stack">
+                  <div class="exp-stat">点赞 359.6万</div>
+                  <div class="exp-stat">收藏 127.6万</div>
+                  <div class="exp-stat">评论 5.1万</div>
+                </div>
+                <div class="exp-static">
+                  <h3>茶叶</h3>
+                  <p>围绕茶叶的生长、采制与冲泡，构建一条兼具质感、气味与地域记忆的视听线索。</p>
+                </div>
               </div>
-              <h3>茶叶</h3>
-              <p>围绕茶叶的生长、采制与冲泡，构建一条兼具质感、气味与地域记忆的视听线索。</p>
+              <div class="exp-detail">
+                <h4>30 秒带你了解冷泡茶</h4>
+                <p>播放页：<span class="exp-link">https://www.douyin.com/video/7502780270949879098</span></p>
+                <div class="exp-detail-grid">
+                  <div><span>点赞</span><strong>359.6万</strong></div>
+                  <div><span>收藏</span><strong>127.6万</strong></div>
+                  <div><span>转发</span><strong>102.9万</strong></div>
+                  <div><span>评论</span><strong>5.1万</strong></div>
+                </div>
+              </div>
             </article>
           </div>
         </div>
@@ -664,7 +1247,7 @@
 
       <section id="works-showcase" class="works">
         <div class="works-header">
-          <div class="works-title">更多作品展示<span>8 个作品循环呈现。</span></div>
+          <div class="works-title glass-button liquid-glass">更多作品</div>
           <a class="glass-button liquid-glass" href="#experiment-sequence">进入实验序列</a>
         </div>
         <div class="feature-grid">
@@ -672,6 +1255,135 @@
           <article class="feature-card work-card" data-slot="1"></article>
           <article class="feature-card work-card" data-slot="2"></article>
           <article class="feature-card work-card" data-slot="3"></article>
+        </div>
+      </section>
+
+      <section id="craftspeople" class="continuation-section">
+        <div class="continuation-inner">
+          <div class="section-pill liquid-glass">// 手艺人</div>
+          <h2 class="section-heading">把人的手感留在技术之后。</h2>
+          <p class="section-copy">
+            这里先搭起手艺人板块的骨架：用于放置人物、工艺、器物、口述和现场记录。视觉语言延续黑底、留白和玻璃质感，让内容成为主角。
+          </p>
+
+          <div class="split-feature">
+            <div class="split-copy">
+              <h3>人物档案</h3>
+              <p>记录创作者、匠人、表演者和研究者的工作方式。后续可以接入人物照片、采访片段、代表作品和联系方式。</p>
+              <a class="glass-button liquid-glass" href="#philosophy">继续阅读</a>
+            </div>
+            <div class="media-shell liquid-glass">
+              <div>
+                <strong>Portrait / Field Notes</strong>
+                <span>预留人物影像、手部细节、工作台与口述文字的位置。</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="split-feature reverse">
+            <div class="media-shell liquid-glass">
+              <div>
+                <strong>Craft Process</strong>
+                <span>预留工序拆解、工具清单、材料细节和短视频入口。</span>
+              </div>
+            </div>
+            <div class="split-copy">
+              <h3>工序现场</h3>
+              <p>将“怎么做”拆成可被观看的步骤，让观众理解节奏、力道、经验和材料之间的关系。</p>
+              <a class="glass-button liquid-glass" href="#works-showcase">查看作品</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="philosophy" class="continuation-section">
+        <div class="continuation-inner">
+          <div class="section-pill liquid-glass">// 哲学</div>
+          <h2 class="section-heading">不是复古，是重新理解秩序。</h2>
+          <p class="section-copy">
+            这里承载网站的方法论：为什么选择这些题材，如何处理传统、影像、算法和当代传播之间的关系。
+          </p>
+
+          <div class="glass-grid">
+            <article class="glass-card liquid-glass">
+              <div class="icon-dot">01</div>
+              <h3>慢观察</h3>
+              <p>先进入现场，再决定镜头。把观看时间留给动作、器物和环境本身。</p>
+            </article>
+            <article class="glass-card liquid-glass">
+              <div class="icon-dot">02</div>
+              <h3>低解释</h3>
+              <p>不把信息塞满画面，用少量文字提供判断入口，让影像承担主要表达。</p>
+            </article>
+            <article class="glass-card liquid-glass">
+              <div class="icon-dot">03</div>
+              <h3>新工具</h3>
+              <p>AI 参与资料整理、视觉预演和传播适配，但最终语气仍由人来决定。</p>
+            </article>
+            <article class="glass-card liquid-glass">
+              <div class="icon-dot">04</div>
+              <h3>可传播</h3>
+              <p>让传统题材进入短视频、图文、展陈和网页，不牺牲质感，也不拒绝流动。</p>
+            </article>
+          </div>
+
+          <div class="quote-grid">
+            <article class="quote-card liquid-glass">
+              <p>“文化不是被保存起来的对象，它需要持续被观看、被误读、被重新组织。”</p>
+              <strong>方法札记 A</strong>
+            </article>
+            <article class="quote-card liquid-glass">
+              <p>“好的页面不急着解释，它先让观众知道自己正在看什么。”</p>
+              <strong>方法札记 B</strong>
+            </article>
+            <article class="quote-card liquid-glass">
+              <p>“技术的价值不是制造奇观，而是把复杂的准备工作安静地放到幕后。”</p>
+              <strong>方法札记 C</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="innovation" class="continuation-section">
+        <div class="continuation-inner">
+          <div class="section-pill liquid-glass">// 拓新</div>
+          <h2 class="section-heading">为下一组实验预留接口。</h2>
+          <p class="section-copy">
+            拓新版块先作为未来扩展区：适合放合作项目、数据成果、实验工具、价格包或联系入口。
+          </p>
+
+          <div class="stats-panel liquid-glass">
+            <div>
+              <span class="stat-value">8+</span>
+              <span class="stat-label">文化短片样本</span>
+            </div>
+            <div>
+              <span class="stat-value">4</span>
+              <span class="stat-label">主要内容方向</span>
+            </div>
+            <div>
+              <span class="stat-value">3</span>
+              <span class="stat-label">核心展示板块</span>
+            </div>
+            <div>
+              <span class="stat-value">1</span>
+              <span class="stat-label">持续更新档案</span>
+            </div>
+          </div>
+
+          <div class="split-feature">
+            <div class="split-copy">
+              <h3>下一步：把内容变成系统。</h3>
+              <p>后续可以加入筛选、人物索引、项目详情页、视频播放层、数据看板和投稿/合作入口。</p>
+              <a class="glass-button liquid-glass" href="mailto:hello@example.com">联系合作</a>
+            </div>
+            <div class="media-shell liquid-glass">
+              <div>
+                <strong>Archive System</strong>
+                <span>预留内容库、检索、标签体系和项目管理视图。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -760,13 +1472,81 @@
       ];
 
       const slots = Array.from(document.querySelectorAll(".work-card"));
+      const experimentCards = Array.from(document.querySelectorAll("[data-work-card]"));
       const featureGrid = document.querySelector(".feature-grid");
+      const nav = document.querySelector(".nav");
       let workOffset = 0;
       let isWorkHovering = false;
+      let lastScrollY = window.scrollY;
+      let navTicking = false;
+
+      function updateNavState() {
+        const currentScrollY = Math.max(window.scrollY, 0);
+        const goingDown = currentScrollY > lastScrollY + 4;
+        const goingUp = currentScrollY < lastScrollY - 4;
+
+        nav?.classList.toggle("nav-compact", currentScrollY > 42);
+
+        if (currentScrollY <= 42) {
+          nav?.classList.remove("nav-hidden");
+        } else if (goingDown && currentScrollY > 240) {
+          nav?.classList.add("nav-hidden");
+        } else if (goingUp) {
+          nav?.classList.remove("nav-hidden");
+        }
+
+        lastScrollY = currentScrollY;
+        navTicking = false;
+      }
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (navTicking) return;
+          navTicking = true;
+          window.requestAnimationFrame(updateNavState);
+        },
+        { passive: true },
+      );
+
+      window.addEventListener("mousemove", (event) => {
+        if (event.clientY < 80) nav?.classList.remove("nav-hidden");
+      });
 
       function metric(label, value) {
         return `<div><span>${label}</span><strong>${value}</strong></div>`;
       }
+
+      experimentCards.forEach((card) => {
+        const video = card.querySelector("video");
+        const soundButton = card.querySelector(".exp-sound");
+
+        card.addEventListener("mouseenter", () => {
+          card.classList.add("is-preview");
+          if (!video) return;
+          video.muted = true;
+          soundButton.textContent = "🔇";
+          video.play?.().catch(() => {});
+        });
+
+        card.addEventListener("mouseleave", () => {
+          card.classList.remove("is-preview");
+          if (!video) return;
+          video.pause?.();
+          video.currentTime = 0;
+          video.muted = true;
+          soundButton.textContent = "🔇";
+        });
+
+        soundButton?.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!video) return;
+          video.muted = !video.muted;
+          soundButton.textContent = video.muted ? "🔇" : "🔊";
+          video.play?.().catch(() => {});
+        });
+      });
 
       function renderWorks() {
         slots.forEach((slot, slotIndex) => {
